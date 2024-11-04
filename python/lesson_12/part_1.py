@@ -27,16 +27,19 @@ class Cherepashka:
     def count_moves(self, x2, y2):
         dx = abs(x2 - self.x)
         dy = abs(y2 - self.y)
-        return max(dx, dy) // self.s
+
+        return (dx // self.s) + (dy // self.s)
 
 cherepashka = Cherepashka(0, 0, 1)
 cherepashka.evolve()
-cherepashka.go_up()
-cherepashka.go_right()
-cherepashka.go_down()
 cherepashka.go_left()
-print(cherepashka.count_moves(0, 0))
+cherepashka.go_left()
+cherepashka.go_up()
+cherepashka.go_up()
 
+# скорость 1, сделали 4 шага из начальной точки
+# ожидаемый результат 4 до начальной точки
+print(cherepashka.count_moves(0, 0))
 
 cherepashka.degrade()
 try:
