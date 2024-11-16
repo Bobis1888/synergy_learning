@@ -1,18 +1,21 @@
+from utils import rand_bool, rand_cell, rand_cell2
+
 # 0 - поле  ⬛
 # 1 - дерево 🌲
 # 2 - река 🌊
 # 3 - госпиталь 🏥
 # 4 - апгрейд-шоп 🏦
 # 5 - огонь 🔥
-
-from utils import rand_bool, rand_cell, rand_cell2
-
 # рамка ⬜
 
 CELL_TYPES = "⬛🌲🌊🏥🏦🔥"
 
-
 class Map:
+
+    def __init__(self, w, h):
+        self.w = w
+        self.h = h
+        self.cells = [[0 for i in range(w)] for j in range(h)]
 
     def print_map(self):
         print('⬜' * (self.w + 2))
@@ -72,8 +75,3 @@ class Map:
 
         for i in range(5):
             self.add_fire()
-
-    def __init__(self, w, h):
-        self.w = w
-        self.h = h
-        self.cells = [[0 for i in range(w)] for j in range(h)]
