@@ -3,11 +3,13 @@
 # 2 - река 🌊
 # 3 - госпиталь 🏥
 # 4 - апгрейд-шоп 🏦
-from final_project.utils import rand_bool, rand_cell, rand_cell2
+# 5 - огонь 🔥
+
+from utils import rand_bool, rand_cell, rand_cell2
 
 # рамка ⬜
 
-CELL_TYPES = "⬛🌲🌊🏥🏦"
+CELL_TYPES = "⬛🌲🌊🏥🏦🔥"
 
 
 class Map:
@@ -41,20 +43,37 @@ class Map:
                 rx, ry = rx2, ry2
                 l -= 1
 
+    def generate_tree(self):
+        c = rand_cell(self.w, self.h)
+        cx, cy = c[0], c[1]
+
+        if self.check_bounds(cx, cy) and self.cells[cx][cy] == 0:
+            self.cells[cx][cy] = 1
+
     def generate_forest(self, r, mxr):
         for ri in range(self.h):
             for ci in range(self.w):
                 if rand_bool(r, mxr):
                     self.cells[ri][ci] = 1
 
+    def add_fire(self):
+        c = rand_cell(self.w, self.h)
+        cx, cy = c[0], c[1]
+
+        if self.check_bounds(cx, cy) and self.cells[cx][cy] == 1:
+            self.cells[cx][cy] = 5
+
+    def update_fires(self):
+        for ri in range(self.h):
+            for ci in range(self.w):
+                cell = self.cells[ri][ci]
+                if cell == 5:
+                    self.cells[ri][ci] = 0
+
+        for i in range(5):
+            self.add_fire()
+
     def __init__(self, w, h):
         self.w = w
         self.h = h
         self.cells = [[0 for i in range(w)] for j in range(h)]
-
-
-tmp = Map(15, 10)
-tmp.generate_forest(2, 10)
-tmp.generate_river(10)
-tmp.generate_river(15)
-tmp.print_map()
