@@ -6,9 +6,16 @@ from utils import rand_bool, rand_cell, rand_cell2
 # 3 - госпиталь 🏥
 # 4 - апгрейд-шоп 🏦
 # 5 - огонь 🔥
+# 6 - вертолет 🚁
+# 7 - жизни 💚
+# 8 - ведро 🪣
+# 9 - облако ☁
+# 10 - молния ⚡
+# 11 - кубок 🏆
 # рамка ⬜
 
-CELL_TYPES = "⬛🌲🌊🏥🏦🔥"
+CELL_TYPES = "⬛🌲🌊🏥🏦🔥🚁"
+
 
 class Map:
 
@@ -17,12 +24,16 @@ class Map:
         self.h = h
         self.cells = [[0 for i in range(w)] for j in range(h)]
 
-    def print_map(self):
+    def print_map(self, helicopter):
         print('⬜' * (self.w + 2))
-        for row in self.cells:
+        for ri in range(self.h):
             print('⬜', end="")
-            for cell in row:
-                if 0 <= cell < len(CELL_TYPES):
+            for ci in range(self.w):
+                cell = self.cells[ri][ci]
+
+                if helicopter.x == ri and helicopter.y == ci:
+                    print(CELL_TYPES[6], end="")
+                elif 0 <= cell < len(CELL_TYPES):
                     print(CELL_TYPES[cell], end="")
                 else:
                     print(CELL_TYPES[0], end="")
