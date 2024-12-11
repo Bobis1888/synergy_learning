@@ -15,7 +15,8 @@ from utils import rand_bool, rand_cell, rand_cell2
 # рамка ⬜
 
 CELL_TYPES = "⬛🌲🌊🏥🏦🔥🚁"
-
+TREE_BONUS = 100
+UPGRADE_COST = 100
 
 class Map:
 
@@ -23,6 +24,10 @@ class Map:
         self.w = w
         self.h = h
         self.cells = [[0 for i in range(w)] for j in range(h)]
+        self.generate_forest(2, 10)
+        self.generate_river(10)
+        self.generate_river(15)
+        self.generate_upgrade_shop()
 
     def print_map(self, helicopter):
         print('⬜' * (self.w + 2))
@@ -84,5 +89,27 @@ class Map:
                 if cell == 5:
                     self.cells[ri][ci] = 0
 
-        for i in range(5):
+        for i in range(10):
             self.add_fire()
+
+    def generate_upgrade_shop(self):
+        c = rand_cell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        self.cells[cx][cy] = 4
+
+    def process_helicopter(self, helicopter):
+        hx = helicopter.x
+        hy = helicopter.y
+
+        c = self.cells[hx][hy]
+
+        if c == 2:
+            helicopter.tank = helicopter.mx_tank
+        if c == 5 and helicopter.tank > 0:
+            helicopter.tank -= 1
+            helicopter.score += TREE_BONUS
+            self.cells[hx][hy] = 1
+        if c == 4 and helicopter.score >= UPGRADE_COST:
+            helicopter.mx_tank += 1
+            helicopter.score -= UPGRADE_COST
+
