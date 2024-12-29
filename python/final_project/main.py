@@ -1,6 +1,7 @@
 # from pynput import keyboard
 from time import sleep
 
+from clouds import Clouds
 from map import Map
 from helicopter import Helicopter
 import time
@@ -10,6 +11,7 @@ import keyboard
 TICK_SLEEP = 0.25
 TREE_UPDATE = 50
 FIRE_UPDATE = 50
+CLOUDS_UPDATE = 100
 MAP_H, MAP_W = 15, 15
 
 MOVES = {
@@ -19,12 +21,9 @@ MOVES = {
     'a' : (0, -1)
 }
 
-
 helicopter = Helicopter(MAP_W, MAP_H)
-
 field = Map(MAP_W, MAP_H)
 field.print_map(helicopter)
-
 
 def call(event):
     if event.event_type != 'up':
@@ -59,3 +58,6 @@ while True:
 
     if tick % FIRE_UPDATE == 0:
         field.update_fires()
+
+    if tick % CLOUDS_UPDATE == 0:
+        field.clouds.update_clouds()

@@ -1,3 +1,6 @@
+import os
+
+from clouds import Clouds
 from utils import rand_bool, rand_cell, rand_cell2
 
 # 0 - поле  ⬛
@@ -9,14 +12,16 @@ from utils import rand_bool, rand_cell, rand_cell2
 # 6 - вертолет 🚁
 # 7 - жизни 💚
 # 8 - ведро 🪣
-# 9 - облако ☁
+# 9 - облако ⛅
 # 10 - молния ⚡
 # 11 - кубок 🏆
 # рамка ⬜
 
-CELL_TYPES = "⬛🌲🌊🏥🏦🔥🚁"
+CELL_TYPES = "⬛🌲🌊🏥🏦🔥🚁⛅⚡"
 TREE_BONUS = 100
-UPGRADE_COST = 100
+UPGRADE_COST = 5000
+LIFE_COST = 1000
+
 
 class Map:
 
@@ -28,6 +33,8 @@ class Map:
         self.generate_river(10)
         self.generate_river(15)
         self.generate_upgrade_shop()
+        self.generate_hospital()
+        self.clouds = Clouds(w, h)
 
     def print_map(self, helicopter):
         print('⬜' * (self.w + 2))
@@ -36,7 +43,11 @@ class Map:
             for ci in range(self.w):
                 cell = self.cells[ri][ci]
 
-                if helicopter.x == ri and helicopter.y == ci:
+                if self.clouds.cells[ri][ci] == 1:
+                    print(CELL_TYPES[7], end="")
+                elif self.clouds.cells[ri][ci] == 2:
+                    print(CELL_TYPES[8], end="")
+                elif helicopter.x == ri and helicopter.y == ci:
                     print(CELL_TYPES[6], end="")
                 elif 0 <= cell < len(CELL_TYPES):
                     print(CELL_TYPES[cell], end="")
@@ -97,11 +108,20 @@ class Map:
         cx, cy = c[0], c[1]
         self.cells[cx][cy] = 4
 
+    def generate_hospital(self):
+        c = rand_cell(self.w, self.h)
+        cx, cy = c[0], c[1]
+        if self.cells[cx][cy] != 4:
+            self.cells[cx][cy] = 3
+        else:
+            self.generate_hospital()
+
     def process_helicopter(self, helicopter):
         hx = helicopter.x
         hy = helicopter.y
 
         c = self.cells[hx][hy]
+        d = self.clouds.cells[hx][hy]
 
         if c == 2:
             helicopter.tank = helicopter.mx_tank
@@ -112,4 +132,14 @@ class Map:
         if c == 4 and helicopter.score >= UPGRADE_COST:
             helicopter.mx_tank += 1
             helicopter.score -= UPGRADE_COST
-
+        if c == 3 and helicopter.score >= LIFE_COST:
+            helicopter.lives += 10
+            helicopter.score -= LIFE_COST
+        if d == 2:
+            helicopter.lives -= 1
+            if helicopter.lives == 0:
+                os.system("clear")
+                print("#" * 35)
+                print("GAME OVER, YOUR SCORE IS", helicopter.score)
+                print("#" * 35)
+                exit(0)
