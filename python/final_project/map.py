@@ -93,12 +93,13 @@ class Map:
         if self.check_bounds(cx, cy) and self.cells[cx][cy] == 1:
             self.cells[cx][cy] = 5
 
-    def update_fires(self):
+    def update_fires(self, helicopter):
         for ri in range(self.h):
             for ci in range(self.w):
                 cell = self.cells[ri][ci]
                 if cell == 5:
                     self.cells[ri][ci] = 0
+                    helicopter.score -= TREE_BONUS
 
         for i in range(10):
             self.add_fire()

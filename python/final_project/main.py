@@ -77,7 +77,7 @@ while True:
         field.generate_tree()
 
     if tick % FIRE_UPDATE == 0:
-        field.update_fires()
+        field.update_fires(helicopter)
 
     if tick % CLOUDS_UPDATE == 0:
         field.clouds.update_clouds()
